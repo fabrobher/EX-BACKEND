@@ -1,9 +1,10 @@
+import { getApp, shutdownApp } from './utils/testApp'
+import { bodeguitaRestaurant, cervezaProduct, paellaProduct } from './utils/testData'
 import { getLoggedInCustomer, getLoggedInOwner } from './utils/auth'
 import { createRestaurant, getFirstRestaurantOfOwner } from './utils/restaurant'
-import { getApp, shutdownApp } from './utils/testApp'
 
 import request from 'supertest'
-import { getNewCervezaProductData, getNewPaellaProductData } from './utils/product'
+import { createProduct, getNewCervezaProductData, getNewPaellaProductData } from './utils/product'
 
 describe('Create product and edit products', () => {
   let owner, customer, productData, app, newProduct
@@ -79,9 +80,9 @@ describe('Set a percentage to restaurant products', () => {
 
     newRestaurant = await createRestaurant(owner)
     newRestaurant2 = await createRestaurant(owner)
-    const paella = await getNewPaellaProductData(newRestaurant)
-    const cerveza = await getNewCervezaProductData(newRestaurant)
-    const paella2 = await getNewPaellaProductData(newRestaurant2)
+    let paella = await getNewPaellaProductData(newRestaurant)
+    let cerveza = await getNewCervezaProductData(newRestaurant)
+    let paella2 = await getNewPaellaProductData(newRestaurant2)
     productData1 = (await request(app).post('/products').set('Authorization', `Bearer ${owner.token}`).send(paella)).body
     productData2 = (await request(app).post('/products').set('Authorization', `Bearer ${owner.token}`).send(cerveza)).body
     productData3 = (await request(app).post('/products').set('Authorization', `Bearer ${owner.token}`).send(paella2)).body
@@ -100,7 +101,7 @@ describe('Set a percentage to restaurant products', () => {
     expect(response.status).toBe(403)
   })
   it('Should return 200 when successfully set a restaurant percentage', async () => {
-    const newRestaurantCopy = newRestaurant
+    let newRestaurantCopy = newRestaurant
     newRestaurantCopy.percentage = 1
     newRestaurantCopy.userId = undefined
     const response = await request(app).put(`/restaurants/${newRestaurantCopy.id}`).set('Authorization', `Bearer ${owner.token}`).send(newRestaurantCopy)
@@ -115,7 +116,7 @@ describe('Set a percentage to restaurant products', () => {
     expect(response.status).toBe(200)
   })
   it('Should return 200 when successfully set a restaurant percentage', async () => {
-    const newRestaurantCopy = newRestaurant
+    let newRestaurantCopy = newRestaurant
     newRestaurantCopy.percentage = -1
     const response = await request(app).put(`/restaurants/${newRestaurantCopy.id}`).set('Authorization', `Bearer ${owner.token}`).send(newRestaurantCopy)
     expect(response.body.percentage).toBe(-1)
@@ -137,7 +138,7 @@ describe('Set a percentage to restaurant products', () => {
     expect(response.status).toBe(200)
   })
   it('Should return 200 when successfully set a restaurant percentage', async () => {
-    const newRestaurantCopy = newRestaurant
+    let newRestaurantCopy = newRestaurant
     newRestaurantCopy.percentage = 1
     const response = await request(app).put(`/restaurants/${newRestaurantCopy.id}`).set('Authorization', `Bearer ${owner.token}`).send(newRestaurantCopy)
     expect(response.body.percentage).toBe(1)
@@ -153,7 +154,7 @@ describe('Set a percentage to restaurant products', () => {
     expect(response.status).toBe(200)
   })
   it('Should return 422 when percentage is out of range (negative)', async () => {
-    const newRestaurantCopy = newRestaurant
+    let newRestaurantCopy = newRestaurant
     newRestaurantCopy.percentage = -6
     const response = await request(app).put(`/restaurants/${newRestaurantCopy.id}`).set('Authorization', `Bearer ${owner.token}`).send(newRestaurantCopy)
     expect(response.status).toBe(422)
@@ -165,7 +166,7 @@ describe('Set a percentage to restaurant products', () => {
     expect(response.status).toBe(200)
   })
   it('Should return 422 when percentage is out of range (positive)', async () => {
-    const newRestaurantCopy = newRestaurant
+    let newRestaurantCopy = newRestaurant
     newRestaurantCopy.percentage = 6
     const response = await request(app).put(`/restaurants/${newRestaurantCopy.id}`).set('Authorization', `Bearer ${owner.token}`).send(newRestaurantCopy)
     expect(response.status).toBe(422)

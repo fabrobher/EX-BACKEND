@@ -85,4 +85,3 @@ const generateFakeUser = async (name) => {
 }
 
 export { bodeguitaRestaurant, cervezaProduct, customerCredentials, generateFakeUser, invalidCredentials, invalidRestaurant, noEmailCustomerCredentials, noEmailOwnerCredentials, ownerCredentials, paellaProduct, review }
-
