@@ -43,7 +43,8 @@ const bodeguitaRestaurant = {
   url: 'http://www.bodeguitasantonioromero.com/',
   email: 'info@bodeguitasantonioromero.com',
   phone: '+34654223939',
-  shippingCosts: 3.5
+  shippingCosts: 3.5,
+  percentage: 0
 }
 
 const paellaProduct = {
@@ -83,4 +84,5 @@ const generateFakeUser = async (name) => {
   return { firstName, lastName, email, password, phone, avatar, address, postalCode, userType, createdAt, updatedAt }
 }
 
-export { ownerCredentials, customerCredentials, noEmailCustomerCredentials, noEmailOwnerCredentials, invalidCredentials, invalidRestaurant, bodeguitaRestaurant, paellaProduct, cervezaProduct, review, generateFakeUser }
+export { bodeguitaRestaurant, cervezaProduct, customerCredentials, generateFakeUser, invalidCredentials, invalidRestaurant, noEmailCustomerCredentials, noEmailOwnerCredentials, ownerCredentials, paellaProduct, review }
+
