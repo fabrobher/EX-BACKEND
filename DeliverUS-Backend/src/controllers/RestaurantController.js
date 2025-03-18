@@ -1,4 +1,4 @@
-import { Restaurant, Product, RestaurantCategory, ProductCategory } from '../models/models.js'
+import { Product, ProductCategory, Restaurant, RestaurantCategory } from '../models/models.js'
 
 const index = async function (req, res) {
   try {
@@ -10,7 +10,7 @@ const index = async function (req, res) {
         model: RestaurantCategory,
         as: 'restaurantCategory'
       },
-        order: [[{ model: RestaurantCategory, as: 'restaurantCategory' }, 'name', 'ASC']]
+        order: [['pinned', 'DESC'], ['pinnedAt', 'ASC'], [{ model: RestaurantCategory, as: 'restaurantCategory' }, 'name', 'ASC']]
       }
     )
     res.json(restaurants)
@@ -28,7 +28,8 @@ const indexOwner = async function (req, res) {
         include: [{
           model: RestaurantCategory,
           as: 'restaurantCategory'
-        }]
+        }],
+        order: [['pinned', 'DESC'], ['pinnedAt', 'ASC']]
       })
     res.json(restaurants)
   } catch (err) {
@@ -38,6 +39,7 @@ const indexOwner = async function (req, res) {
 
 const create = async function (req, res) {
   const newRestaurant = Restaurant.build(req.body)
+  newRestaurant.pinnedAt = newRestaurant.pinned ? new Date() : null
   newRestaurant.userId = req.user.id // usuario actualmente autenticado
   try {
     const restaurant = await newRestaurant.save()
@@ -95,12 +97,59 @@ const destroy = async function (req, res) {
   }
 }
 
+const togglePinned = async function (req, res) {
+  try {
+    const newRestaurant = await Restaurant.findByPk(req.params.restaurantId)
+
+    if (!newRestaurant) {
+      return res.status(404).json({ error: 'Restaurant not found' })
+    }
+
+    if (newRestaurant) {
+      newRestaurant.pinned = !newRestaurant.pinned
+      newRestaurant.pinnedAt = newRestaurant.pinned ? new Date() : null
+    }
+
+    await newRestaurant.save()
+
+    res.json(newRestaurant)
+  } catch (err) {
+    res.status(500).send(err)
+  }
+}
+
+const togglePinned2 = async function (req, res) {
+  try {
+    const restaurant = await Restaurant.findByPk(req.params.restaurantId)
+
+    if (!restaurant) {
+      return res.status(404).json({ error: 'Restaurant not found' })
+    }
+
+    // Alternar el estado de "pinned" y actualizar "pinnedAt"
+    await Restaurant.update(
+      {
+        pinned: !restaurant.pinned,
+        pinnedAt: !restaurant.pinned ? new Date() : null
+      },
+      { where: { id: req.params.restaurantId } }
+    )
+
+    const updatedRestaurant = await Restaurant.findByPk(req.params.restaurantId)
+    res.status(200).json(updatedRestaurant)
+  } catch (err) {
+    res.status(500).send(err)
+  }
+}
+
 const RestaurantController = {
   index,
   indexOwner,
   create,
   show,
   update,
-  destroy
+  destroy,
+  togglePinned,
+  togglePinned2
 }
 export default RestaurantController
