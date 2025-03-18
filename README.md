@@ -1,73 +1,109 @@
-# DeliverUS - Simulation project
+# IISSI-2 IS: Examen de laboratorio Julio 2024. 
 
-## DeliverUS
+>[!WARNING] 
+>El proyecto de este examen agrega una tabla nueva. Si vas a trabajar con otros proyectos de la asignatura, previamente debes **borrar todas las tablas** de la base de datos "DeliverUS" antes de ejecutar la migración del proyecto. Esto es debido a que las operaciones "db:create" y "db:drop" de Sequelize-cli no están disponibles para MariaDB.
+  
+## Actuaciones en directo. Enunciado
 
-You can find DeliverUS documentation at: <https://github.com/IISSI2-IS-2025>
+Una vez se ha puesto en marcha la primera versión de DeliverUS, los inversores han solicitado la inclusión de una nueva funcionalidad que consiste en ofrecer a los propietarios la posibilidad de registrar actuaciones musicales en directo para darle publicidad. 
 
-## Introduction
+* En la pantalla "Restaurants" aparecerá un nuevo botón "Nueva actuación" que lleva al formulación de creación de actuación. Si queda menos de una semana para alguna actuación, aparecerá el aviso "¡Próxima actuación!".
 
-This repository includes the complete backend (`DeliverUS-Backend` folder) and the `owner` frontend (`DeliverUS-Frontend-Owner` folder).
+* En la pantalla "CreatePerformance" aparece un formulario para registrar una nueva actuación, para la que se pedirá el nombre del grupo y la fecha en la que tendrá lugar. Solo podrá haber una actuación por día. Todos los campos son obligatorios.
 
-## Pinned Restaurants. Description
+* En la pantalla de "RestaurantDetail" aparecerá en su cabecera la información de las próximas actuaciones debajo de la información del restaurante, siempre que quede menos de una semana, ordenadas por proximidad temporal.
 
-After the initial launch of DeliverUS, investors have requested a new feature that allows owners to pin their restaurants. Each owner can pin as many restaurants as they wish.
+### Ejercicio 1
 
-An owner can pin restaurants in two different ways:
+Realice todos los cambios necesarios en el proyecto de backend para implementar el nuevo requisito. Los test de backend esperan que haya una nueva ruta: `/performances` y que los campos de la tabla "Performances" sean "id", "group", "appointment" y "restaurantId". 
 
-* In the restaurant creation form. By default, it will not be pinned, but the owner can choose to pin it. To do this, a `Switch` should be provided that works with a property called `pinned`. If the `Switch` is checked, the restaurant should be created as pinned. The backend expects the `pinned` property to be a boolean and optional. If the property is not present, it should be created as not pinned.
-
-* On the "My Restaurants" screen, through an icon that will act as a button and will be displayed next to each restaurant. By clicking it, the restaurant will be pinned or unpinned. The application should ask for confirmation from the owner when the button is pressed: use the provided `ConfirmationModal` component, similar to the `DeleteModal` component used in class. The system will inform the user if the restaurant has been pinned or unpinned.
-
-Finally, pinned restaurants will always appear at the top of the restaurant lists presented to their owner and will be ordered by the date they were pinned (oldest first), followed by the non-pinned ones.
-
-### Tasks on backend
-
-Make all the necessary changes in the backend project to implement the new requirement. The backend tests expect the route to be: `PATCH /restaurants/:restaurantId/togglePinned` and that restaurants have a new property called `pinnedAt`.
-
-In the backend tests, note the body of `POST /restaurants/` includes a `pinned` property to be either true or false.  
-
-Do not forget that controllers in charge of listings must be adapted to the new requirement. 
-
-Remember that you can run the backend tests with:
+Recuerde que puede correr los tests con:
 ```Bash
 npm run test:backend
 ```
+Céntrese en aquellos añadidos al archivo: `performances.test.js`.
 
-### Requirements summary
+### Ejercicio 2
 
-* RF1. Ability to create a pinned or unpinned restaurant.
-* RF2. Ability to set an existing restaurant as pinned or unpinned. 
-* RF3. List restaurants in the described order: first the pinned restaurants ordered by pin date (the oldest pinned restaurants must come first), and then the unpinned restaurants. 
+Realice todos los cambios necesarios en el proyecto de frontend para implementar el nuevo requisito. Se sugieren los siguientes estilos:
 
-## Environment Setup
+```Bash
+badge: {
+    textAlign: 'center',
+    borderWidth: 2,
+    paddingHorizontal: 10,
+    borderRadius: 10
+  }
+```
+
+```Bash
+emptyPerformanceList: {
+    textAlign: 'center',
+    fontSize: 15,
+    padding: 20,
+    color: 'white'
+  }
+```
+
+```Bash
+containerPerformance: {
+    padding: 20,
+    backgroundColor: 'rgba(0,0,0,0.5)',
+    flexDirection: 'column',
+    alignItems: 'center',
+    borderRadius: 10
+  }
+```
+
+## Aclaraciones:
+
+Para simplificar el desarrollo del examen de laboratorio, tenga en cuenta:
+* En el frontend, en la pantalla "CreatePerformance" el campo de fecha sigue el formato inglés por defecto, tal y como se observa en las capturas de pantalla. No es necesario cambiar este formato.
+
+## Enlaces de ayuda:
+
+* https://sequelize.org/docs/v6/core-concepts/assocs/#special-methodsmixins-added-to-instances
+* https://sequelize.org/docs/v7/querying/operators/
+* https://express-validator.github.io/docs/api/validation-chain/#isdate
+* https://www.jsdocs.io/package/yup#date
+
+## Capturas de pantallas:
+
+Nótese que **la presentación y estilos de estas capturas deben ser fielmente reflejados en tu solución**: 
+
+<div style="display: grid; grid-template-columns: repeat(2, 50%); gap: 20px;">
+  <img src="docs/MyRestaurants.JPG" alt="List of restaurants" style="border: solid 2px #ccc; width: calc(100% - 20px);"/>
+  <img src="docs/RestaurantDetail-Performance.JPG" alt="Restaurant with performances" style="border: solid 2px #ccc; width: calc(100% - 20px);"/>
+  <img src="docs/RestaurantDetail-NoPerformance.JPG" alt="Restaurant without any performance" style="border: solid 2px #ccc; width: calc(100% - 20px);"/>
+  <img src="docs/CreatePerformance-BackendValidation.JPG" alt="New performance with validation error from backend" style="border: solid 2px #ccc; width: calc(100% - 20px);"/>
+  <img src="docs/CreatePerformance-FrontendValidation.JPG" alt="New performance with validation error from frontend" style="border: solid 2px #ccc; width: calc(100% - 20px);"/>
+</div>
+
+## Proyecto base suministrado
+
+Este repositorio incluye el backend completo (carpeta `DeliverUS-Backend`) y el frontend de `owner` (carpeta `DeliverUS-Frontend-Owner`). Servirá como base para realizar el examen de laboratorio de la asignatura.
+
+## Preparación del entorno
 
 ### a) Windows
 
-* Open a terminal and run the command:
-
-    ```Bash
-    npm run install:all:win
-    ```
+* Abra un terminal y ejecute el comando `npm run install:all:win`.
 
 ### b) Linux/MacOS
 
-* Open a terminal and run the command:
+* Abra un terminal y ejecute el comando `npm run install:all:bash`.
 
-    ```Bash
-    npm run install:all:bash
-    ```
-
-## Execution
+## Ejecución
 
 ### Backend
 
-* To **recreate migrations and seeders**, open a terminal and run the command:
+* Para **rehacer las migraciones y seeders**, abra un terminal y ejecute el comando
 
     ```Bash
     npm run migrate:backend
     ```
 
-* To **start the backend**, open a terminal and run the command:
+* Para **ejecutarlo**, abra un terminal y ejecute el comando
 
     ```Bash
     npm run start:backend
@@ -75,41 +111,38 @@ npm run test:backend
 
 ### Frontend
 
-* To **run the `customer` frontend application**, open a new terminal and run the command:
-
-    ```Bash
-    npm run start:frontend:customer
-    ```
-
-* To **run the `owner` frontend application**, open a new terminal and run the command:
+* Para **ejecutar la aplicación frontend de `owner`**, abra un nuevo terminal y ejecute el comando
 
     ```Bash
     npm run start:frontend:owner
     ```
 
-## Debugging
 
-* To **debug the backend**, make sure **NO** instance is running, click the `Run and Debug` button on the sidebar, select `Debug Backend` from the dropdown list, and press the *Play* button.
+## Depuración
 
-* To **debug the frontend**, make sure there **IS** a running instance of the frontend you want to debug, click the `Run and Debug` button on the sidebar, select `Debug Frontend` from the dropdown list, and press the *Play* button.
+* Para **depurar el backend**, asegúrese de que **NO** existe una instancia en ejecución, pulse en el botón `Run and Debug` de la barra lateral, seleccione `Debug Backend` en la lista desplegable, y pulse el botón de *Play*.
 
-## Testing
+* Para **depurar el frontend**, asegúrese de que **EXISTE** una instancia en ejecución del frontend que desee depurar, pulse en el botón `Run and Debug` de la barra lateral, seleccione `Debug Frontend` en la lista desplegable, y pulse el botón de *Play*.
 
-* To verify the proper functioning of the backend, you can run the included test suite by executing the following command:
+## Test
+
+* Para comprobar el correcto funcionamiento de backend puede ejecutar el conjunto de tests incluido a tal efecto. Para ello ejecute el siguiente comando:
 
     ```Bash
     npm run test:backend
     ```
+**Advertencia: Los tests no pueden ser modificados.**
 
-**Warning: Tests cannot be modified.**
+## Problemas con los puertos
 
-## Port Issues
+En ocasiones, los procesos de backend o frontend, con o sin depuración, pueden quedarse bloqueados sin liberar los puertos utilizados, impidiendo que puedan ejecutarse otros procesos. Se recomienda cerrar y volver a iniciar VSC para cerrar dichos procesos.
 
-Sometimes, backend or frontend processes, with or without debugging, may get stuck without releasing the used ports, preventing other processes from running. It is recommended to close and restart VSC to close such processes.
 
-## Submission Procedure
+## Procedimiento de entrega
 
-1. Delete the **node_modules** folders from backend and frontend and the **.expo** folder from the frontend.
-2. Create a ZIP that includes the entire project. **Important: Ensure that the ZIP is not the same as the one you downloaded and includes your solution**
-3. Notify the instructor before submitting.
-4. When the instructor gives the green light, you can upload the ZIP to the Virtual Teaching platform. Wait for the platform to show a link to the ZIP before clicking the accept button.
+1. Borrar las carpetas **node_modules** de backend y frontend y **.expo** del frontend.
+1. Crear un ZIP que incluya todo el proyecto. **Importante: Comprueba que el ZIP no es el mismo que te has descargado e incluye tu solución**
+1. Avisa al profesor antes de entregar.
+1. Cuando el profesor te dé el visto bueno, puedes subir el ZIP a la plataforma de Enseñanza Virtual. **Es muy importante esperar a que la plataforma te muestre un enlace al ZIP antes de pulsar el botón de enviar**. Se recomienda descargar ese ZIP para comprobar lo que se ha subido. Un vez realizada la comprobación, puedes enviar el examen.
+  
+Si no se siguen estos pasos de manera escrupulosa, cabe la posibilidad de que no se entregue nada o que el ZIP contenga cualquier cosa. 
