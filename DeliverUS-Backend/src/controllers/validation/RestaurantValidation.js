@@ -1,7 +1,18 @@
 import { check } from 'express-validator'
-import { checkFileIsImage, checkFileMaxSize } from './FileValidationHelper.js'
-const maxFileSize = 2000000 // around 2Mb
+import { Restaurant } from '../../models/models.js'
+import { checkFileIsImage, checkFileMaxSize } from './FileValidationHelper.js'; // around 2Mb
+const maxFileSize = 2000000
 
+const checkOnlyOnePromotedRestaurant = async (value, { req }) => {
+  try {
+    const restaurant = await Restaurant.findAll({ where: { userId: req.user.id, promoted: true } })
+    if (restaurant.length() >= 1) {
+      return Promise.reject(new Error('The restaurantId does not exist.'))
+    } else { return Promise.resolve() }
+  } catch (err) {
+    return Promise.reject(new Error(err))
+  }
+}
 const create = [
   check('name').exists().isString().isLength({ min: 1, max: 255 }).trim(),
   check('description').optional({ nullable: true, checkFalsy: true }).isString().trim(),
@@ -12,6 +23,8 @@ const create = [
   check('email').optional({ nullable: true, checkFalsy: true }).isString().isEmail().trim(),
   check('phone').optional({ nullable: true, checkFalsy: true }).isString().isLength({ min: 1, max: 255 }).trim(),
   check('restaurantCategoryId').exists({ checkNull: true }).isInt({ min: 1 }).toInt(),
+  check('promoted').optional({ nullable: true, checkFalsy: true }).toBoolean().isBoolean(),
+  check('promoted').custom(checkOnlyOnePromotedRestaurant),
   check('userId').not().exists(),
   check('heroImage').custom((value, { req }) => {
     return checkFileIsImage(req, 'heroImage')
@@ -33,6 +46,8 @@ const update = [
   check('postalCode').exists().isString().isLength({ min: 1, max: 255 }),
   check('url').optional({ nullable: true, checkFalsy: true }).isString().isURL().trim(),
   check('shippingCosts').exists().isFloat({ min: 0 }).toFloat(),
+  check('promoted').optional({ nullable: true, checkFalsy: true }).toBoolean().isBoolean(),
+  check('promoted').custom(checkOnlyOnePromotedRestaurant),
   check('email').optional({ nullable: true, checkFalsy: true }).isString().isEmail().trim(),
   check('phone').optional({ nullable: true, checkFalsy: true }).isString().isLength({ min: 1, max: 255 }).trim(),
   check('restaurantCategoryId').exists({ checkNull: true }).isInt({ min: 1 }).toInt(),
@@ -52,3 +67,4 @@ const update = [
 ]
 
 export { create, update }
+
