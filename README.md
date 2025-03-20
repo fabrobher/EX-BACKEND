@@ -1,73 +1,77 @@
-# DeliverUS - Simulation project
+# IISSI-2 IS: Examen de laboratorio Junio 2024. 
 
-## DeliverUS
+## Productos con periodo de visibilidad. Enunciado
 
-You can find DeliverUS documentation at: <https://github.com/IISSI2-IS-2025>
+Una vez se ha puesto en marcha la primera versión de DeliverUS, los inversores han solicitado la inclusión de una nueva funcionalidad que consiste en ofrecer a los propietarios la posibilidad de establecer un momento en el que los productos dejarán de ser visibles (`visibleUntil`).
 
-## Introduction
+Un propietario podrá establecer este momento al crear o actualizar un producto con dos escenarios posibles:
 
-This repository includes the complete backend (`DeliverUS-Backend` folder) and the `owner` frontend (`DeliverUS-Frontend-Owner` folder).
+* Por defecto, este momento será nulo, por lo que se considera que siempre estará visible.
+* Si un propietario establece este momento, el producto solo estará visible hasta la fecha (inclusive).
 
-## Pinned Restaurants. Description
+Además se deben cumplir las siguientes reglas de negocio:
+* Un propietario no podrá establecer un momento de fin anterior al momento actual.
+* Un propierario no podrá establecer un producto como no disponible y, al mismo tiempo, un momento de fin.
 
-After the initial launch of DeliverUS, investors have requested a new feature that allows owners to pin their restaurants. Each owner can pin as many restaurants as they wish.
 
-An owner can pin restaurants in two different ways:
+Finalmente, los productos que estén a una semana o menos de desaparecer aparecerán en la interfaz marcados.
 
-* In the restaurant creation form. By default, it will not be pinned, but the owner can choose to pin it. To do this, a `Switch` should be provided that works with a property called `pinned`. If the `Switch` is checked, the restaurant should be created as pinned. The backend expects the `pinned` property to be a boolean and optional. If the property is not present, it should be created as not pinned.
+### Ejercicio 1
 
-* On the "My Restaurants" screen, through an icon that will act as a button and will be displayed next to each restaurant. By clicking it, the restaurant will be pinned or unpinned. The application should ask for confirmation from the owner when the button is pressed: use the provided `ConfirmationModal` component, similar to the `DeleteModal` component used in class. The system will inform the user if the restaurant has been pinned or unpinned.
+Realice todos los cambios necesarios en el proyecto de backend para implementar el nuevo requisito asegurándose de que los test se ejecutan correctamente.
 
-Finally, pinned restaurants will always appear at the top of the restaurant lists presented to their owner and will be ordered by the date they were pinned (oldest first), followed by the non-pinned ones.
-
-### Tasks on backend
-
-Make all the necessary changes in the backend project to implement the new requirement. The backend tests expect the route to be: `PATCH /restaurants/:restaurantId/togglePinned` and that restaurants have a new property called `pinnedAt`.
-
-In the backend tests, note the body of `POST /restaurants/` includes a `pinned` property to be either true or false.  
-
-Do not forget that controllers in charge of listings must be adapted to the new requirement. 
-
-Remember that you can run the backend tests with:
+Recuerde que puede correr los tests con:
 ```Bash
 npm run test:backend
 ```
 
-### Requirements summary
+Céntrese en aquellos añadidos al archivo: `productsVisibility.test.js`.
 
-* RF1. Ability to create a pinned or unpinned restaurant.
-* RF2. Ability to set an existing restaurant as pinned or unpinned. 
-* RF3. List restaurants in the described order: first the pinned restaurants ordered by pin date (the oldest pinned restaurants must come first), and then the unpinned restaurants. 
+Enlaces de ayuda:
 
-## Environment Setup
+* https://sequelize.org/docs/v6/core-concepts/assocs/#special-methodsmixins-added-to-instances
+* https://sequelize.org/docs/v7/querying/operators/
+* https://express-validator.github.io/docs/api/validation-chain/#isdate
+* https://www.jsdocs.io/package/yup#date
+
+### Ejercicio 2
+
+Realice todos los cambios necesarios en el proyecto de frontend para implementar el nuevo requisito.
+
+Puede renderizar el icono de fijado propuesto con
+
+<div style="display: grid; grid-template-columns: repeat(2, 50%); gap: 20px;">
+  <img src="docs/captura1.png" alt="captura1" style="border: solid 2px #ccc; width: calc(100% - 20px);"/>
+  <img src="docs/captura2.png" alt="captura2" style="border: solid 2px #ccc; width: calc(100% - 20px);"/>
+  <img src="docs/captura3.png" alt="captura3" style="border: solid 2px #ccc; width: calc(100% - 20px);"/>
+  <img src="docs/captura4.png" alt="captura5" style="border: solid 2px #ccc; width: calc(100% - 20px);"/>
+</div>
+
+## Proyecto base suministrado
+
+Este repositorio incluye el backend completo (carpeta `DeliverUS-Backend`) y el frontend de `owner` (carpeta `DeliverUS-Frontend-Owner`). Servirá como base para realizar el examen de laboratorio de la asignatura.
+
+## Preparación del entorno
 
 ### a) Windows
 
-* Open a terminal and run the command:
-
-    ```Bash
-    npm run install:all:win
-    ```
+* Abra un terminal y ejecute el comando `npm run install:all:win`.
 
 ### b) Linux/MacOS
 
-* Open a terminal and run the command:
+* Abra un terminal y ejecute el comando `npm run install:all:bash`.
 
-    ```Bash
-    npm run install:all:bash
-    ```
-
-## Execution
+## Ejecución
 
 ### Backend
 
-* To **recreate migrations and seeders**, open a terminal and run the command:
+* Para **rehacer las migraciones y seeders**, abra un terminal y ejecute el comando
 
     ```Bash
     npm run migrate:backend
     ```
 
-* To **start the backend**, open a terminal and run the command:
+* Para **ejecutarlo**, abra un terminal y ejecute el comando
 
     ```Bash
     npm run start:backend
@@ -75,41 +79,35 @@ npm run test:backend
 
 ### Frontend
 
-* To **run the `customer` frontend application**, open a new terminal and run the command:
-
-    ```Bash
-    npm run start:frontend:customer
-    ```
-
-* To **run the `owner` frontend application**, open a new terminal and run the command:
+* Para **ejecutar la aplicación frontend de `owner`**, abra un nuevo terminal y ejecute el comando
 
     ```Bash
     npm run start:frontend:owner
     ```
 
-## Debugging
 
-* To **debug the backend**, make sure **NO** instance is running, click the `Run and Debug` button on the sidebar, select `Debug Backend` from the dropdown list, and press the *Play* button.
+## Depuración
 
-* To **debug the frontend**, make sure there **IS** a running instance of the frontend you want to debug, click the `Run and Debug` button on the sidebar, select `Debug Frontend` from the dropdown list, and press the *Play* button.
+* Para **depurar el backend**, asegúrese de que **NO** existe una instancia en ejecución, pulse en el botón `Run and Debug` de la barra lateral, seleccione `Debug Backend` en la lista desplegable, y pulse el botón de *Play*.
 
-## Testing
+* Para **depurar el frontend**, asegúrese de que **EXISTE** una instancia en ejecución del frontend que desee depurar, pulse en el botón `Run and Debug` de la barra lateral, seleccione `Debug Frontend` en la lista desplegable, y pulse el botón de *Play*.
 
-* To verify the proper functioning of the backend, you can run the included test suite by executing the following command:
+## Test
+
+* Para comprobar el correcto funcionamiento de backend puede ejecutar el conjunto de tests incluido a tal efecto. Para ello ejecute el siguiente comando:
 
     ```Bash
     npm run test:backend
     ```
+**Advertencia: Los tests no pueden ser modificados.**
 
-**Warning: Tests cannot be modified.**
+## Problemas con los puertos
 
-## Port Issues
+En ocasiones, los procesos de backend o frontend, con o sin depuración, pueden quedarse bloqueados sin liberar los puertos utilizados, impidiendo que puedan ejecutarse otros procesos. Se recomienda cerrar y volver a iniciar VSC para cerrar dichos procesos.
 
-Sometimes, backend or frontend processes, with or without debugging, may get stuck without releasing the used ports, preventing other processes from running. It is recommended to close and restart VSC to close such processes.
+## Procedimiento de entrega
 
-## Submission Procedure
-
-1. Delete the **node_modules** folders from backend and frontend and the **.expo** folder from the frontend.
-2. Create a ZIP that includes the entire project. **Important: Ensure that the ZIP is not the same as the one you downloaded and includes your solution**
-3. Notify the instructor before submitting.
-4. When the instructor gives the green light, you can upload the ZIP to the Virtual Teaching platform. Wait for the platform to show a link to the ZIP before clicking the accept button.
+1. Borrar las carpetas **node_modules** de backend y frontend y **.expo** del frontend.
+1. Crear un ZIP que incluya todo el proyecto. **Importante: Comprueba que el ZIP no es el mismo que te has descargado e incluye tu solución**
+1. Avisa al profesor antes de entregar.
+1. Cuando el profesor te dé el visto bueno, puedes subir el ZIP a la plataforma de Enseñanza Virtual. Espera a que la plataforma te muestre un enlace al ZIP antes de pulsar el botón de aceptar.
