@@ -9,14 +9,21 @@ const loadModel = (sequelize, DataTypes) => {
      * The `models/index` file will call this method automatically.
      */
     static associate (models) {
-      // TO-DO: define association here      
+      // TO-DO: define association here
+      Performance.belongsTo(models.Restaurant, { foreignKey: 'restaurantId', as: 'restaurant', onDelete: 'cascade' })
     }
   }
 
-  /*{Performance.init(
+  Performance.init({
     // TO-DO
     // Here's the model definition
-  })*/
+    group: DataTypes.STRING,
+    appointment: DataTypes.DATE,
+    restaurantId: DataTypes.INTEGER
+  }, {
+    sequelize,
+    modelName: 'Performance'
+  })
 
   return Performance
 }

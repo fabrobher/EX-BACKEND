@@ -37,4 +37,5 @@ const checkProductHasNotBeenOrdered = async (req, res, next) => {
   }
 }
 
-export { checkProductOwnership, checkProductRestaurantOwnership, checkProductHasNotBeenOrdered }
+export { checkProductHasNotBeenOrdered, checkProductOwnership, checkProductRestaurantOwnership }
+
