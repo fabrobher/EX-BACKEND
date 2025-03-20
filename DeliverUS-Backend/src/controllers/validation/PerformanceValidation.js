@@ -1,6 +1,6 @@
 // This is a new file for solution!
 import { check } from 'express-validator'
-import { Restaurant } from '../../models/models.js'
+import { Performance, Restaurant } from '../../models/models.js'
 
 const checkRestaurantExists = async (value, { req }) => {
   try {
@@ -21,7 +21,7 @@ const checkPerformancesSameDate = async (value, { req }) => {
     for (const performance of performances) {
       const newPerformanceDate = new Date(req.body.appointment)
       const performanceDateToCompare = performance.appointment
-      if (newPerformanceDate.getTime() == performanceDateToCompare.getTime()) {
+      if (newPerformanceDate.getTime() === performanceDateToCompare.getTime()) {
         error = true
         break
       }
